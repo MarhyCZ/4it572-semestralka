@@ -74,7 +74,6 @@
 #         port: 80
 
 - name: Remove old EC2 
-  debugger: always
   hosts: localhost
   tasks:
   - name: Gather information about eshop instances
