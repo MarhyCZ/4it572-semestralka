@@ -88,6 +88,7 @@
     register: ec2
 
   - name: Remove old eshop instances
+    debugger: always
     amazon.aws.ec2_instance:
       region: us-east-1
       access_key: "{{ access_key }}"
@@ -99,8 +100,3 @@
     vars:
       toremove: |-
         {% if not ec2.instances|map('[-2:]')|select|length == ec2.instances|length %}JOIN{% endif %}
-      register: toremove
-
-  - name: Debug log
-    debug:
-      var: toremove
