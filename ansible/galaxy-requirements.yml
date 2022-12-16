@@ -1,1 +1,2 @@
-amazon.aws
+- src: amazon.aws
+  name: ec2
