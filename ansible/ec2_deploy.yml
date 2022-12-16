@@ -99,5 +99,7 @@
     vars:
       _toremove: |-
         {% if not ec2.instances|map('[-2:]')|select|length == ec2.instances|length %}JOIN{% endif %}
+
+  - name: Debug log
     ansible.builtin.debug:
       msg: "{{_toremove}}"
