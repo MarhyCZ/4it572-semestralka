@@ -78,6 +78,9 @@
   - name: Gather information about eshop instances
     amazon.aws.ec2_instance_info:
       region: us-east-1
+      access_key: "{{ access_key }}"
+      secret_key: "{{ secret_key }}"
+      session_token: "{{ session_token }}"
       filters:
         "tag:Name": "eshop-*"
         instance-state-name: [ "present"]
@@ -86,6 +89,9 @@
   - name: Remove old eshop instances
     amazon.aws.ec2_instance:
       region: us-east-1
+      access_key: "{{ access_key }}"
+      secret_key: "{{ secret_key }}"
+      session_token: "{{ session_token }}"
       instance_ids: "{{_toremove}}"
       state: absent
       wait: yes
