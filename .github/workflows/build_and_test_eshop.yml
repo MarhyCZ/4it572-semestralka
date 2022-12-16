@@ -98,9 +98,6 @@ jobs:
 
       - name: Install ansible
         run: pip3 install ansible boto boto3 
-      
-      - name: Install ansible modules
-        run: ansible-galaxy install -r ansible/galaxy-requirements.yml
 
       - name: Run playbook
         run: |
