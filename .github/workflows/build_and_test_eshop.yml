@@ -49,7 +49,7 @@ jobs:
           npm run build -- --colors
       
       - name: Cache node modules and Build folder
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/cache@v3.0.11
         with:
           path: |
@@ -82,28 +82,9 @@ jobs:
         run: |
           npm run test -- --colors
 
-  # Deploy:
-  #   needs: [Build, Test]
-  #   if: ${{ github.ref == 'refs/heads/master' }}
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2.5.0
-  #       with:
-  #         token: ${{ secrets.WORKFLOW_TOKEN }}
-
-  #     - name: Load node modules and build folder
-  #       uses: actions/cache@v3.0.11
-  #       with:
-  #         path: |
-  #           ~/.npm
-  #           ./node_modules
-  #           ./build
-  #         key: ${{ runner.os }}--build-${{ github.run_id }}
-
   Deploy:
     needs: [Build, Test]
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -122,4 +103,5 @@ jobs:
         run: |
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .ansible_vault_password
           echo "${{ secrets.EC2_SSH_KEY }}" > .ec2_ssh_key.pem
-          ansible-playbook ec2_deploy.yml --vault-password-file .ansible_vault_password --key-file .ec2_ssh_key.pem
+          chmod 400 .ec2_ssh_key.pem
+          ansible-playbook ansible/ec2_deploy.yml --vault-password-file .ansible_vault_password --key-file .ec2_ssh_key.pem
