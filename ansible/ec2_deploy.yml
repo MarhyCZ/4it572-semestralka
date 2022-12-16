@@ -33,46 +33,47 @@
         delay: 60
         timeout: 300
       loop: "{{ ec2.instances }}"
-- name: Configure EC2
-  hosts: launched
-  connection: ssh
-  tasks: 
-    - name: Install Git and Docker
-      yum:
-        name:
-          - docker
-          - git
-        state: latest
-        update_cache: yes
-      become: yes
-    - service: 
-        name: docker
-        state: started
-        enabled: yes
-      become: yes
-    - name: Start Docker on startup
-      shell: systemctl enable docker --now
-      become: yes
-    - name: Set rights to Docker
-      shell: usermod -a -G docker ec2-user
-      become: yes
+# - name: Configure EC2
+#   hosts: launched
+#   connection: ssh
+#   tasks: 
+#     - name: Install Git and Docker
+#       yum:
+#         name:
+#           - docker
+#           - git
+#         state: latest
+#         update_cache: yes
+#       become: yes
+#     - service: 
+#         name: docker
+#         state: started
+#         enabled: yes
+#       become: yes
+#     - name: Start Docker on startup
+#       shell: systemctl enable docker --now
+#       become: yes
+#     - name: Set rights to Docker
+#       shell: usermod -a -G docker ec2-user
+#       become: yes
 
-    - name: Get project files from GIT
-      git: 
-        repo: "https://github.com/MarhyCZ/4it572-semestralka.git"
-        dest: ./app
-    - name: Build docker image
-      shell: cd app && docker build -t eshop:latest .
-      become: yes
-    - name: Run eshop
-      shell: docker run -p 80:3000 eshop
-      async: 45
-      poll: 0
-      become: yes
-    - wait_for:
-        port: 80
+#     - name: Get project files from GIT
+#       git: 
+#         repo: "https://github.com/MarhyCZ/4it572-semestralka.git"
+#         dest: ./app
+#     - name: Build docker image
+#       shell: cd app && docker build -t eshop:latest .
+#       become: yes
+#     - name: Run eshop
+#       shell: docker run -p 80:3000 eshop
+#       async: 45
+#       poll: 0
+#       become: yes
+#     - wait_for:
+#         port: 80
 
 - name: Remove old EC2 
+  hosts: localhost
   tasks:
   - name: Gather information about eshop instances
     amazon.aws.ec2_instance_info:
