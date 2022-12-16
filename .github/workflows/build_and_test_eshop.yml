@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.5.0
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.5.1
         with:
@@ -33,8 +31,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.5.0
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.5.1
@@ -70,8 +66,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.5.0
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.5.1
@@ -88,28 +82,23 @@ jobs:
         run: |
           npm run test -- --colors
 
-  Deploy:
-    needs: [Build, Test]
-    if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-latest
+  # Deploy:
+  #   needs: [Build, Test]
+  #   if: ${{ github.ref == 'refs/heads/master' }}
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.5.0
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2.5.0
+  #       with:
+  #         token: ${{ secrets.WORKFLOW_TOKEN }}
 
-      - name: Load node modules and build folder
-        uses: actions/cache@v3.0.11
-        with:
-          path: |
-            ~/.npm
-            ./node_modules
-            ./build
-          key: ${{ runner.os }}--build-${{ github.run_id }}
+  #     - name: Load node modules and build folder
+  #       uses: actions/cache@v3.0.11
+  #       with:
+  #         path: |
+  #           ~/.npm
+  #           ./node_modules
+  #           ./build
+  #         key: ${{ runner.os }}--build-${{ github.run_id }}
 
-      - name: Deploy to Firebase
-        uses: lowply/deploy-firebase@v0.0.5
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT: marhycz-4it572
