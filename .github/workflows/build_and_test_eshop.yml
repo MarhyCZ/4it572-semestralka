@@ -100,8 +100,8 @@ jobs:
         run: pip3 install ansible boto boto3 
       
       - name: Install ansible modules
-        run: ansible-galaxy install -r ansible/galaxy-requirements.txt
-        
+        run: ansible-galaxy install -r ansible/galaxy-requirements.yml
+
       - name: Run playbook
         run: |
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .ansible_vault_password
