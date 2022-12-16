@@ -1,38 +1,38 @@
-# - name: Deploy to EC2
-#   hosts: localhost
-#   connection: local
-#   tasks:
-#     - name: Launch EC2 Instance
-#       amazon.aws.ec2_instance:
-#         name: eshop
-#         instance_type: t2.micro
-#         image: 
-#           id: ami-0b0dcb5067f052a63
-#         region: us-east-1
-#         key_name: devops
-#         vpc_subnet_id: subnet-055698fe877fc544f 
-#         security_group: eshop
-#         count: 1
-#         network:
-#           assign_public_ip: yes
-#         wait: yes
-#         access_key: "{{ access_key }}"
-#         secret_key: "{{ secret_key }}"
-#         session_token: "{{ session_token }}"
-#       register: ec2
+- name: Deploy to EC2
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Launch EC2 Instance
+      amazon.aws.ec2_instance:
+        name: eshop
+        instance_type: t2.micro
+        image: 
+          id: ami-0b0dcb5067f052a63
+        region: us-east-1
+        key_name: devops
+        vpc_subnet_id: subnet-055698fe877fc544f 
+        security_group: eshop
+        count: 1
+        network:
+          assign_public_ip: yes
+        wait: yes
+        access_key: "{{ access_key }}"
+        secret_key: "{{ secret_key }}"
+        session_token: "{{ session_token }}"
+      register: ec2
 
-#     - name: Add instance host to group
-#       add_host:
-#         hostname: "{{ item.public_ip_address }}"
-#         groupname: launched
-#       loop: "{{ ec2.instances }}"
+    - name: Add instance host to group
+      add_host:
+        hostname: "{{ item.public_ip_address }}"
+        groupname: launched
+      loop: "{{ ec2.instances }}"
       
-#     - name: Wait for SSH
-#       delegate_to: "{{ item.public_dns_name }}"
-#       wait_for_connection:
-#         delay: 60
-#         timeout: 300
-#       loop: "{{ ec2.instances }}"
+    - name: Wait for SSH
+      delegate_to: "{{ item.public_dns_name }}"
+      wait_for_connection:
+        delay: 60
+        timeout: 300
+      loop: "{{ ec2.instances }}"
 
 # - name: Configure EC2
 #   hosts: launched
@@ -77,25 +77,14 @@
   hosts: localhost
   tasks:
   - name: Gather information about eshop instances
-    amazon.aws.ec2_instance_info:
-      region: us-east-1
-      access_key: "{{ access_key }}"
-      secret_key: "{{ secret_key }}"
-      session_token: "{{ session_token }}"
-      filters:
-        "tag:Name": "eshop-*"
-        instance-state-name: [ "present"]
-    register: ec2
-
-  - name: Remove old eshop instances
     amazon.aws.ec2_instance:
       region: us-east-1
       access_key: "{{ access_key }}"
       secret_key: "{{ secret_key }}"
       session_token: "{{ session_token }}"
-      instance_ids: "{{toremove}}"
+      filters:
+        "tag:Name": "eshop"
+        instance-state-name: [ "running"]
+      exact_count: 2
       state: absent
       wait: yes
-    vars:
-      toremove: |-
-        {% if not ec2.instances|map('[-2:]')|select|length == ec2.instances|length %}JOIN{% endif %}
