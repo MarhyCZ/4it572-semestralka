@@ -93,14 +93,14 @@
       access_key: "{{ access_key }}"
       secret_key: "{{ secret_key }}"
       session_token: "{{ session_token }}"
-      instance_ids: "{{_toremove}}"
+      instance_ids: "{{toremove}}"
       state: absent
       wait: yes
     vars:
-      _toremove: |-
+      toremove: |-
         {% if not ec2.instances|map('[-2:]')|select|length == ec2.instances|length %}JOIN{% endif %}
-      register: _toremove
+      register: toremove
 
   - name: Debug log
     debug:
-      var: _toremove
+      var: toremove
