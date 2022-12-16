@@ -74,6 +74,7 @@
 #         port: 80
 
 - name: Remove old EC2 
+  debugger: always
   hosts: localhost
   tasks:
   - name: Gather information about eshop instances
@@ -88,7 +89,6 @@
     register: ec2
 
   - name: Remove old eshop instances
-    debugger: always
     amazon.aws.ec2_instance:
       region: us-east-1
       access_key: "{{ access_key }}"
