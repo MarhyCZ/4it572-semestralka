@@ -100,6 +100,8 @@ jobs:
         run: pip3 install ansible boto boto3 
 
       - name: Run playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .ansible_vault_password
           echo "${{ secrets.EC2_SSH_KEY }}" > .ec2_ssh_key.pem
